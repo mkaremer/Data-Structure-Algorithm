@@ -1,7 +1,8 @@
 /*
             CONDITION VARIABLE IN THREAD SYNCHRONIZATION
 
-    - Condition variables are tools used with mutexes to help threads wait for certain conditions before continuing.
+    - Condition variables are tools used with mutexes to help threads wait for certain 
+                conditions before continuing.
     - This is useful when a thread needs to wait for an event to happen.
 
             KEY CONCEPTS
@@ -22,7 +23,8 @@
     - Signaling: Notify one waiting thread that the condition is met.
     - Broadcasting: Notify all waiting threads that the condition is met.
 
-This ensures efficient coordination between threads without busy-waiting, making programs more responsive and efficient.
+This ensures efficient coordination between threads without busy-waiting, 
+    making programs more responsive and efficient.
 */
 //EXAMPLE CODE WITHOUT CONDITION VARIABLE
 // #include <pthread.h>

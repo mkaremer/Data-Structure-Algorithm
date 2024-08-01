@@ -76,8 +76,15 @@ int main(){
     pthread_t thread_id:
     thread_args args = {42, 3.14};
 
-    pthread_create(thread_id, NULL, thread_fucntion3, (void *)&args)
-    pthread_join(thread_id, NULL);
+    if (pthread_create(thread_id, NULL, thread_fucntion3, (void *)&args)){
+        fprintf(stderr, "Thread creation failed\n");
+        return 1;
+    }
+
+    if (pthread_join(thread_id, NULL)){
+        fprintf(stderr, "Thread join failed\n");
+        return 2;
+    }
 }
 
 /*
@@ -85,7 +92,8 @@ int main(){
 
     - The thread function doesn't always have to return NULL
     - It returns a void *, so you can return any type of data by casting it to void *
-    - This is useful if you need to send a result back to the main thread or another waiting thread.
+    - This is useful if you need to send a result back to the main thread or 
+                another waiting thread.
 */
 //Example:
 
