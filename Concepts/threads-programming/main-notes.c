@@ -13,7 +13,6 @@
     - which allows them to communicate easily, but they must be carefully managed to avoid conflicts.
 
         WHY USE THREADS
-
     - Concurrency: Run multiple tasks simultaneously.
     - Resource Sharing: Threads share the same memory space, which is efficient for data sharing.
     - Responsiveness: Keep a program responsive by performing long-running tasks in the background.
