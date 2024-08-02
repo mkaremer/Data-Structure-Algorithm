@@ -306,3 +306,104 @@ Node* mergeTwoLists(Node* l1, Node* l2) {
 
     return dummy.next;  // The merged list starts from dummy.next
 }
+/*
+            SUM LISTS
+    * You have two numbers represented by linked list, where each node contains
+ * a single digit. Digits are stored in reverse order.(1's digit is at the head)
+ * Write a function that adds two such numbers and returns a number in similar
+ * list format.
+ * example:
+ * 7-->1-->6 + 5-->9-->2 = 2-->1-->9
+ * which is (617 + 295  = 912)
+ * What if digits are not stored in reverse order(i.e 1's digit is at tail)
+ * (6--1-->7) + (2-->9-->5) = (9-->1-->2) 
+*/
+listNode* addTwoNums(ListNode* l1, ListNode* l2){
+    ListNode* dummyHead = createNode(0);
+    ListNode* l1_ptr = l1;
+    ListNode* l2_ptr = l2;
+    ListNode* current = dummyHead;
+    int carry = 0;
+
+    while(l1_ptr != NULL || l2_ptr != NULL){
+        // Get the current values of the nodes, or 0 if the node is NULL
+        int x = (l1_ptr != NULL) ? l1->val : 0;
+        int y = (l2_ptr != NULL) ? l2->val : 0;
+
+        int sum = carry + x + y; //get the sum
+
+        carry = sum / 10; // update the carry
+        
+        //create new node with digit part of sum
+        current->next = createNode(sum % 10);
+
+        current = current ->next; //move current to point to next node
+
+        //Move to the next nodes in the input lists if available
+        if (l1_ptr != NULL) 
+            l1_ptr = l1_ptr->next;
+
+        if (l2_ptr != NULL)
+            l2_ptr = l2_ptr->next;
+            
+        //if there is a remaining carry, create a new node for it
+        if(carry > 0){
+            current->next = createNode(carry);
+        }
+
+        return dummyHead->next;
+    }
+}
+// Function to add two numbers represented by linked lists (forward order) without reversing the lists
+struct ListNode* addTwoNumbersForward(struct ListNode* l1, struct ListNode* l2) {
+    // Create two stacks to hold the digits of the two numbers
+    struct ListNode* stack1 = NULL;
+    struct ListNode* stack2 = NULL;
+    
+    // Push all digits of l1 to stack1
+    while (l1 != NULL) {
+        struct ListNode* newNode = createNode(l1->val); // Create a new node with the current digit
+        newNode->next = stack1; // Push the node onto stack1
+        stack1 = newNode; // Move the stack1 pointer to the new node
+        l1 = l1->next; // Move to the next node in l1
+    }
+    
+    // Push all digits of l2 to stack2
+    while (l2 != NULL) {
+        struct ListNode* newNode = createNode(l2->val); // Create a new node with the current digit
+        newNode->next = stack2; // Push the node onto stack2
+        stack2 = newNode; // Move the stack2 pointer to the new node
+        l2 = l2->next; // Move to the next node in l2
+    }
+    
+    // Initialize the result list and carry variable
+    struct ListNode* result = NULL;
+    int carry = 0;
+    
+    // Pop digits from stacks and add them
+    while (stack1 != NULL || stack2 != NULL || carry != 0) {
+        int x = (stack1 != NULL) ? stack1->val : 0; // Get the current digit from stack1 or 0 if stack1 is empty
+        int y = (stack2 != NULL) ? stack2->val : 0; // Get the current digit from stack2 or 0 if stack2 is empty
+        int sum = carry + x + y; // Calculate the sum of the current digits and carry
+        carry = sum / 10; // Update the carry for the next iteration
+        
+        struct ListNode* newNode = createNode(sum % 10); // Create a new node with the digit part of the sum
+        newNode->next = result; // Insert the new node at the beginning of the result list
+        result = newNode; // Move the result pointer to the new node
+        
+        if (stack1 != NULL) {
+            struct ListNode* temp = stack1; // Temporarily store the current node of stack1
+            stack1 = stack1->next; // Move to the next node in stack1
+            free(temp); // Free the memory of the current node
+        }
+        
+        if (stack2 != NULL) {
+            struct ListNode* temp = stack2; // Temporarily store the current node of stack2
+            stack2 = stack2->next; // Move to the next node in stack2
+            free(temp); // Free the memory of the current node
+        }
+    }
+    
+    // Return the result list
+    return result;
+}

@@ -25,6 +25,7 @@
 
 int counter = 0; // Shared counter
 pthread_mutex_t lock; //mutex to protect the counter
+// pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
 void *increment_counter(void *arg) {
     for (int i = 0; i < NUM_INCREMENTS; i++) {
