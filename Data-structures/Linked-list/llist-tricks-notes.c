@@ -319,7 +319,11 @@ Node* mergeTwoLists(Node* l1, Node* l2) {
  * (6--1-->7) + (2-->9-->5) = (9-->1-->2) 
 */
 listNode* addTwoNums(ListNode* l1, ListNode* l2){
-    ListNode* dummyHead = createNode(0);
+    // ListNode* dummyHead = createNode(0);
+    ListNode* dummyHead =(ListNode*) malloc(sizeof(ListNode));
+    dummyHead->val = 0;
+    dummyHead->next = head;
+    
     ListNode* l1_ptr = l1;
     ListNode* l2_ptr = l2;
     ListNode* current = dummyHead;
@@ -345,14 +349,13 @@ listNode* addTwoNums(ListNode* l1, ListNode* l2){
 
         if (l2_ptr != NULL)
             l2_ptr = l2_ptr->next;
-            
-        //if there is a remaining carry, create a new node for it
-        if(carry > 0){
-            current->next = createNode(carry);
-        }
-
-        return dummyHead->next;
     }
+    //if there is a remaining carry, create a new node for it
+    if(carry > 0){
+        current->next = createNode(carry);
+    }
+
+    return dummyHead->next;
 }
 // Function to add two numbers represented by linked lists (forward order) without reversing the lists
 struct ListNode* addTwoNumbersForward(struct ListNode* l1, struct ListNode* l2) {
@@ -406,4 +409,104 @@ struct ListNode* addTwoNumbersForward(struct ListNode* l1, struct ListNode* l2) 
     
     // Return the result list
     return result;
+}
+   
+/*
+        REMOVE DUPLICATES
+    write a code to remove duplicates from an sorted linked list. 
+
+    Follow up:
+    how would you solve this problem if a termporary buffer is not allowed?
+
+    The below solution will have a O(n) ^ 2 time and O(1) space
+
+*/
+// Function to remove duplicates from the linked list
+void removeDuplicates(Node* head) {
+    Node* current = head; // Initialize the current pointer to the head of the list
+    Node* prev = NULL;    // Initialize a previous pointer to keep track of the node before temp
+    Node* temp = NULL;    // Temporary pointer used for scanning ahead of the current node
+
+    // Outer loop to iterate through each node in the list with the current pointer
+    while (current != NULL && current->next != NULL) {
+        prev = current;      // Set prev to the current node
+        temp = current->next; // Set temp to the next node after current
+        
+        // Inner loop to compare the current node with all subsequent nodes
+        while (temp != NULL) {
+            // Check if current and temp nodes have the same data
+            if (current->data == temp->data) {
+                // If a duplicate is found, link the previous node to the next node, skipping temp
+                prev->next = temp->next;
+                free(temp); // Free the memory allocated to the duplicate node
+                temp = prev->next; // Move temp to the next node
+            } else {
+                // If no duplicate is found, move prev to temp
+                prev = temp;
+                // Move temp to the next node in the list
+                temp = temp->next;
+            }
+        }
+        // Move current to the next node in the list
+        current = current->next;
+    }
+}
+
+/*
+                            DUMMY NODE
+    - In linked list problems, a dummy node is a helper node used to make coding 
+            easier and avoid handling special cases:
+
+            - Handles Edge Cases: It simplifies situations like when the list is empty or when operations involve the head node.
+            - Uniform Operations: You can treat all nodes the same way, even the head, which makes coding simpler.
+            - Consistent Reference: The dummy node always points to the start of the list, making it easy to return the head of the modified list.
+            - Reduces Complexity: It reduces the chance of bugs by eliminating special cases at the start of the list.
+            - 
+*/
+//EXAMPLE:
+// Function to remove elements with a specific value from the linked list.
+struct ListNode* removeElements(struct ListNode* head, int val) {
+    // Create a dummy node and point it to the head of the list.
+    struct ListNode* dummy = (struct ListNode*)malloc(sizeof(struct ListNode));
+    dummy->val = 0;
+    dummy->next = head;
+
+    // Initialize a current pointer to the dummy node.
+    struct ListNode* current = dummy;
+
+    // Traverse the list and remove nodes with the specified value.
+    while (current->next != NULL) {
+        if (current->next->val == val) {
+            struct ListNode* temp = current->next;
+            current->next = current->next->next; // Bypass the node to be deleted.
+            free(temp); // Free the memory of the deleted node.
+        } else {
+            current = current->next; // Move to the next node.
+        }
+    }
+    struck ListNode* newHead = dummy->next;
+    free(dummy);
+
+    return newHead;
+}
+
+/*
+                    DELETE MIDDLE NODE
+    Implement an algorithm to delete a node in the middle (i.e, any node but the first and last node,
+        not necessarily the exact middle) of a singly linked list, given only access to that node
+
+        ex: a->b->c->d->e->f delete node c
+            output: a->b->d->e->f
+*/
+// Function to delete a node from the middle of the list
+void deleteMiddleNode(ListNode* node) {
+    if (node == NULL || node->next == NULL) {
+        printf("Cannot delete the given node.\n");
+        return;
+    }
+
+    ListNode* nextNode = node->next;  // Get the next node
+    node->data = nextNode->data;  // Copy data from the next node to the current node
+    node->next = nextNode->next;  // Bypass the next node
+    free(nextNode);  // Free the memory of the bypassed node
 }
