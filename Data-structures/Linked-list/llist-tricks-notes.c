@@ -54,34 +54,37 @@ Node* reverseList(Node* head) {
                 st
     Output: 1->4->3->2->5->NULL
 */
-// Function to reverse a sublist from position m to n
-Node* reverseBetween(Node* head, int m, int n) {
-    if (!head || m == n) return head;  // If the list is empty or m equals n, no changes are needed
+// Function to reverse the linked list between positions left and right.
+struct ListNode* reverseBetween(struct ListNode* head, int left, int right) {
+    // Create a dummy node to handle edge cases (e.g., reversing from head)
+    struct ListNode dummy;
+    dummy.val = 0;
+    dummy.next = head;
 
-    Node dummy;  // Create a dummy node to simplify edge cases
-    dummy.next = head;  // Set the dummy node's next to the head of the list
-    Node* prev = &dummy;  // Initialize prev to the dummy node
-
-    // Move prev to the node just before the m-th node
-    for (int i = 1; i < m; i++) {
-        prev = prev->next;  // Advance prev one node at a time
+    // 1) Reach the node at position "left"
+    struct ListNode* leftPrev = &dummy;
+    struct ListNode* cur = head;
+    for (int i = 0; i < left - 1; i++) {
+        leftPrev = cur;
+        cur = cur->next;
     }
 
-    Node* const start = prev->next;  // start points to the m-th node
-    Node* then = start->next;  // then points to the node after start
-
-    // Reverse the segment from m to n
-    for (int i = 0; i < n - m; i++) {
-        start->next = then->next;  // Bypass then
-        then->next = prev->next;  // Insert then at the beginning of the reversed segment
-        
-        prev->next = then;  // Update prev to point to the new first node of the reversed segment
-        then = start->next;  // Move then to the next node to be reversed
+    // Now cur = left, leftPrev = node before left
+    // 2) Reverse from left to right
+    struct ListNode* prev = NULL;
+    for (int i = 0; i < right - left + 1; i++) {
+        struct ListNode* tmpNext = cur->next;
+        cur->next = prev;
+        prev = cur;
+        cur = tmpNext;
     }
 
-    return dummy.next;  // Return the new head of the list
+    // 3) Update pointers
+    leftPrev->next->next = cur;  // cur is node after "right"
+    leftPrev->next = prev;       // prev is "right"
+
+    return dummy.next;
 }
-
 /*
 
             2. FAST AND SLOW POINTER TECHNIQUE
@@ -509,4 +512,109 @@ void deleteMiddleNode(ListNode* node) {
     node->data = nextNode->data;  // Copy data from the next node to the current node
     node->next = nextNode->next;  // Bypass the next node
     free(nextNode);  // Free the memory of the bypassed node
+}
+
+/*
+                REMOVE DUPLICATES FROM AN UNSORTED LINKED LIST
+        Given the head of a linked list, find all the values that appear more than once in the list and 
+        delete the nodes that have any of those values.
+        Return the linked list after the deletions.
+
+        Input: head = [1,2,3,2]
+    Output: [1,3]
+    Explanation: 2 appears twice in the linked list, so all 2's should be deleted. 
+    After deleting all 2's, we are left with [1,3].
+*/
+// Function to remove duplicates from an unsorted linked list.
+struct ListNode* removeDuplicatesUsorted(struct ListNode* head) {
+    if (head == NULL) return NULL;
+    
+    // Create a hash map to count occurrences of each value.
+    int hashMap[100001] = {0}; // Assuming values are within the range [0, 100000].
+    
+    // First pass to count occurrences of each value.
+    struct ListNode* current = head;
+    while (current != NULL) {
+        hashMap[current->val]++;
+        current = current->next;
+    }
+    
+    // Dummy node to handle deletions at the head.
+    struct ListNode* dummy = createNode(0);
+    dummy->next = head;
+    struct ListNode* prev = dummy;
+    current = head;
+    
+    // Second pass to remove nodes with duplicate values.
+    while (current != NULL) {
+        if (hashMap[current->val] > 1) {
+            // Delete the current node.
+            prev->next = current->next;
+            free(current);
+        } else {
+            // Move the prev pointer only if the current node is not deleted.
+            prev = current;
+        }
+        current = prev->next;
+    }
+    
+    // Return the new head of the linked list.
+    struct ListNode* newHead = dummy->next;
+    free(dummy); // Free the dummy node.
+    return newHead;
+}
+
+/*
+        MERGE K SORTED LISTS
+You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
+Merge all the linked-lists into one sorted linked-list and return it.
+Example 1:
+
+Input: lists = [[1,4,5],[1,3,4],[2,6]]
+Output: [1,1,2,3,4,4,5,6]
+*/
+// Function to merge two sorted linked lists
+struct ListNode* merge(struct ListNode* list1, struct ListNode* list2) {
+    struct ListNode dummy;
+    dummy.val = 0;
+    dummy.next = NULL;
+    struct ListNode* tail = &dummy;
+
+    while (list1 != NULL && list2 != NULL) {
+        if (list1->val <= list2->val) {
+            tail->next = list1;
+            list1 = list1->next;
+        } else {
+            tail->next = list2;
+            list2 = list2->next;
+        }
+        tail = tail->next;
+    }
+
+    // Attach the remaining part
+    if (list1 != NULL) {
+        tail->next = list1;
+    } else {
+        tail->next = list2;
+    }
+
+    return dummy.next;
+}
+
+// Function to merge k sorted linked lists
+struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
+    if (listsSize == 0) {
+        return NULL;
+    }
+    if (listsSize == 1) {
+        return lists[0];
+    }
+
+    // Iterate through lists and merge them one by one
+    struct ListNode* mergedList = lists[0];
+    for (int i = 1; i < listsSize; i++) {
+        mergedList = merge(mergedList, lists[i]);
+    }
+
+    return mergedList;
 }
