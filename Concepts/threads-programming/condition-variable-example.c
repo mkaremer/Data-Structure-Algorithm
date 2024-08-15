@@ -39,6 +39,7 @@ This ensures efficient coordination between threads without busy-waiting,
 
 // void *producer(void *arg) {
 //     for (int i = 0; i < NUM_ITEMS; i++) {
+//         while(data_ready == 1)
 //         while (data_ready); // Busy-waiting until data is consumed
 //         buffer = i; // Produce data
 //         data_ready = 1; // Indicate data is ready
@@ -50,6 +51,7 @@ This ensures efficient coordination between threads without busy-waiting,
 
 // void *consumer(void *arg) {
 //     for (int i = 0; i < NUM_ITEMS; i++) {
+//         while(data_ready == 0);
 //         while (!data_ready); // Busy-waiting until data is produced
 //         printf("Consumed: %d\n", buffer);
 //         data_ready = 0; // Indicate data is consumed
