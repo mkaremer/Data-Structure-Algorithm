@@ -93,7 +93,7 @@ struct ListNode* reverseBetween(struct ListNode* head, int left, int right) {
     - Move slow one step at a time
         slow = slow->next
     - Move fast two step at a time
-        fast = fast->next
+        fast = fast->next->next
     - When fast reaches the end of list, slow will be at the middle
         fast is NULL(odd list) or fast->next(even list) is NULL
        
@@ -108,7 +108,8 @@ Node* middleNode(Node* head){
 
     while(fast != NULL || fast->next != NULL){
         slow = slow->next;
-        fast = fast->next;
+        fast = fast->next->next;
+
     }
 
     return slow;
@@ -526,11 +527,12 @@ void deleteMiddleNode(ListNode* node) {
     After deleting all 2's, we are left with [1,3].
 */
 // Function to remove duplicates from an unsorted linked list.
+#define HASH_SIZE 10001
 struct ListNode* removeDuplicatesUsorted(struct ListNode* head) {
     if (head == NULL) return NULL;
     
     // Create a hash map to count occurrences of each value.
-    int hashMap[100001] = {0}; // Assuming values are within the range [0, 100000].
+    int hashMap[HASH_SIZE] = {0}; // Assuming values are within the range [0, 100000].
     
     // First pass to count occurrences of each value.
     struct ListNode* current = head;
@@ -618,3 +620,43 @@ struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
 
     return mergedList;
 }
+/*Remove Node From End of Linked List
+You are given the beginning of a linked list head, and an integer n.
+
+Remove the nth node from the end of the list and return the beginning of the list.
+
+Example 1:
+
+Input: head = [1,2,3,4], n = 2
+
+Output: [1,2,4]
+*/
+
+ListNode* removeNthNode(ListNode* head, int n){
+    ListNode dummy;
+    dummy.val = 0;
+    dummy.next = head;
+
+    ListNode* left = &dummy;
+    ListNode* right = head;
+
+    while(n > 0){
+        right = right->next;
+        n--; 
+    }
+
+    while(right != NULL){
+        right = right->next;
+        left = left->next;
+    }
+
+    ListNode* deleteNode = left->next;
+    left->next = left->next->next;
+    free(deleteNode);
+
+    return dummy.next;
+}
+
+
+// [[2, 3,4], [5,6,7], [8,9,10]]
+// [2,3,4,5,6,7...]

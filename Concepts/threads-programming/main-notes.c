@@ -7,7 +7,6 @@
     - multithreading: the process of executing multiple threads simultaneously to achieve parallelism
 
             BASICS OF THREADS
-
     - A thread is a smaller unit of a process that can be scheduled to run independently.
     - Multiple threads within a process share the same data space
     - which allows them to communicate easily, but they must be carefully managed to avoid conflicts.

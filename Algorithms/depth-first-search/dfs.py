@@ -24,10 +24,10 @@ Hard
 """
 def dfs_recursive(graph, start, visited=None):
     if visited is None:
-        visited = set()  # Initialize a new set for each call
+        visited = set()  #Initialize a new set for each call
 
     visited.add(start)
-    print(start)  # Print the current node or perform any action
+    print(start)  #Print the current node or perform any action
 
     for neighbor in graph[start]:
         if neighbor not in visited:
