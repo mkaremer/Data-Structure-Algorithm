@@ -743,3 +743,104 @@ public:
         return res;
     }
 };
+
+/*
+    Problem: Count Good Nodes in a tree
+    Within a binary tree, a node x is considered good if the path from the root of the tree 
+    to the node x contains no nodes with a value greater than the value of node x
+
+    Given the root of a binary tree root, return the number of good nodes within the tree.
+
+    How the Solution Works:
+        - DFS Traversal: The dfs function moves through the tree starting from the root, carrying along 
+                the highest value seen so far (maxValue).
+        - Counting Good Nodes: A node is "good" if its value is greater than or equal to maxValue. 
+                If it is, the count is increased.
+        - Recursive Calls: The function updates maxValue and then checks the left and right subtrees.
+*/
+class Solution {
+public:
+    int goodNodes(TreeNode* root) {
+        // Start DFS with the root node, initially the root's value is the maximum value
+        return dfs(root, root->val);
+    }
+
+private:
+    // Helper function to perform DFS and count good nodes
+    int dfs(TreeNode* root, int maxValue){
+        if(root == nullptr){
+            return 0;  // Base case: if the node is NULL, return 0
+        }
+
+        // Check if the current node is a good node
+        int count = (root->val >= maxValue) ? 1 : 0;
+
+        // Update the maximum value seen so far
+        maxValue = max(maxValue, root->val);
+
+        // Continue DFS on the left and right subtrees, and add their good nodes count
+        count += dfs(root->left, maxValue);
+        count += dfs(root->right, maxValue);
+
+        return count;  // Return the total count of good nodes
+    }
+};
+
+/*
+    Problem: Validate Binary search tree (BST)
+
+How It Works:
+DFS Traversal: The dfs function goes through the tree recursively, checking if each node’s 
+    value is between a minimum (min) and maximum (max). Initially, 
+    LONG_MIN and LONG_MAX are used to cover all values.
+
+BST Conditions: If a node’s value is not between min and max, the function returns false. 
+    Otherwise, it checks the left subtree (values must be less than the current node) and 
+    the right subtree (values must be greater).
+
+Base Case: If a node is NULL, the function returns true, meaning the subtree is valid.
+
+TIME AND SPACE COMPLEXITY
+
+
+Time Complexity:
+Traversal of Every Node: The dfs function visits each node in the tree exactly once during the traversal. 
+For each node, it performs constant-time operations like comparing values and making recursive calls.
+Since every node is visited exactly once, the time complexity is O(n), where n is the number of nodes in the tree.
+
+Space Complexity:
+Recursive Call Stack: The space complexity depends on the depth of the recursive calls, 
+which is related to the height of the tree.
+In the worst case (if the tree is completely unbalanced, like a linked list), the height of the tree could be n, 
+and the space complexity due to the recursion stack would be O(n).
+In the best case (if the tree is balanced), the height of the tree is log(n), 
+and the space complexity would be O(log n) due to the recursive call stack.
+
+Thus, the overall space complexity is O(h), where h is the height of the tree, which is O(n) in the worst case and O(log n) in the best case.
+
+*/
+class Solution {
+public:
+    // Function to check if the binary tree is a valid BST
+    bool isValidBST(TreeNode* root) {
+        return dfs(root, LONG_MIN, LONG_MAX);  // Start DFS with the root and initial bounds
+    }
+
+private:
+    // Helper function to perform DFS and check BST conditions
+    bool dfs(TreeNode* root, long min, long max){
+        if (root == nullptr) {
+            return true;  // Base case: an empty tree is a valid BST
+        }
+
+        // If the current node's value is out of the allowed range, it's not a valid BST
+        if (!(min < root->val && root->val < max)) {
+            return false;
+        }
+
+        // Recursively check the left subtree with updated max value
+        // Recursively check the right subtree with updated min value
+        return dfs(root->left, min, root->val) && 
+               dfs(root->right, root->val, max);
+    }
+};
