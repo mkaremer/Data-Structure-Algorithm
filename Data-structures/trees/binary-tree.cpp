@@ -1,9 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+#include <iostream>
+#include <vector>
 
 // Define a node structure for the binary tree
 typedef struct TreeNode{
-    int data;                 
+    int val;                 
     struct TreeNode* left;      
     struct TreeNode* right;     
 } TreeNode;
@@ -16,7 +18,7 @@ TreeNode* createNode(int data) {
         fprintf(stderr, "Memory allocation failed\n");
         return NULL;
     }
-    newNode->data = data;
+    newNode->val = data;
     newNode->left = NULL;
     newNode->right = NULL;
     return newNode;
@@ -28,7 +30,7 @@ TreeNode* insert(TreeNode* root, int data) {
         return createNode(data);
     }
 
-    if (data < root->data) {  // If data is less, insert in the left subtree
+    if (data < root->val) {  // If data is less, insert in the left subtree
         root->left = insert(root->left, data);
     } else {  // If data is greater or equal, insert in the right subtree
         root->right = insert(root->right, data);
@@ -47,10 +49,10 @@ TreeNode* minValueNode(TreeNode* node) {
 
 // Function to search for a node in the binary tree
 TreeNode* search(TreeNode* root, int data) {
-    if (root == NULL || root->data == data)
+    if (root == NULL || root->val == data)
         return root;
 
-    if (data < root->data)
+    if (data < root->val)
         return search(root->left, data);
 
     return search(root->right, data);
@@ -60,7 +62,7 @@ TreeNode* search(TreeNode* root, int data) {
 void inOrderTraversal(TreeNode* root) {
     if (root != NULL) {
         inOrderTraversal(root->left);  // Visit left subtree
-        printf("%d ", root->data);     // Visit root
+        printf("%d ", root->val);     // Visit root
         inOrderTraversal(root->right); // Visit right subtree
     }
 }
@@ -68,7 +70,7 @@ void inOrderTraversal(TreeNode* root) {
 // Function for pre-order traversal of the binary tree
 void preOrderTraversal(TreeNode* root) {
     if (root != NULL) {
-        printf("%d ", root->data);     // Visit root
+        printf("%d ", root->val);     // Visit root
         preOrderTraversal(root->left);  // Visit left subtree
         preOrderTraversal(root->right); // Visit right subtree
     }
@@ -79,7 +81,7 @@ void postOrderTraversal(TreeNode* root) {
     if (root != NULL) {
         postOrderTraversal(root->left);  // Visit left subtree
         postOrderTraversal(root->right); // Visit right subtree
-        printf("%d ", root->data);       // Visit root
+        printf("%d ", root->val);       // Visit root
     }
 }
 
@@ -116,11 +118,11 @@ TreeNode* deleteNode(TreeNode* root, int value) {
     }
 
     // If the value to be deleted is smaller than the root's value, it lies in the left subtree
-    if (value < root->data) {
+    if (value < root->val) {
         root->left = deleteNode(root->left, value);
     }
     // If the value to be deleted is greater than the root's value, it lies in the right subtree
-    else if (value > root->data) {
+    else if (value > root->val) {
         root->right = deleteNode(root->right, value);
     }
     // If the value is the same as the root's value, this is the node to be deleted
@@ -140,10 +142,10 @@ TreeNode* deleteNode(TreeNode* root, int value) {
         TreeNode* temp = minValueNode(root->right);
 
         // Copy the in-order successor's content to this node
-        root->data = temp->data;
+        root->val = temp->val;
 
         // Delete the in-order successor
-        root->right = deleteNode(root->right, temp->data);
+        root->right = deleteNode(root->right, temp->val);
     }
     return root;
 }
@@ -195,7 +197,7 @@ int treeSum(TreeNode* root) {
     int rightSum = treeSum(root->right);
 
     // Return the sum of the current node's data, the sum of the left subtree, and the sum of the right subtree
-    return root->data + leftSum + rightSum;
+    return root->val + leftSum + rightSum;
 }
 
 /*
@@ -214,7 +216,7 @@ int maxValue(TreeNode* root) {
     int rightMax = maxValue(root->right);
 
     // Find the maximum value between leftMax, rightMax, and root->data
-    return max(root->data, max(leftMax, rightMax));
+    return max(root->val, max(leftMax, rightMax));
 }
 
 
@@ -306,7 +308,7 @@ bool exists(TreeNode* root, int data) {
     }
 
     // Check if the current node's value matches the target data
-    if (root->data == data) {
+    if (root->val == data) {
         return true;  // If the value is found, return true
     }
 
@@ -817,6 +819,8 @@ In the best case (if the tree is balanced), the height of the tree is log(n),
 and the space complexity would be O(log n) due to the recursive call stack.
 
 Thus, the overall space complexity is O(h), where h is the height of the tree, which is O(n) in the worst case and O(log n) in the best case.
+
+
 
 */
 class Solution {
